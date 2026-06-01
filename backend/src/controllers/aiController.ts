@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { Donor } from '../models/Donor';
+import { COMPATIBILITY_MAP } from '../utils/matching';
 
 const getGeminiClient = () => {
   const apiKey = process.env.GEMINI_API_KEY;
@@ -214,13 +215,97 @@ const evaluateEligibilityLocally = (
   };
 };
 
-/**
- * Local Rule replies for AI Chatbot
- */
 const evaluateChatLocally = (message: string): string => {
   const msg = message.toLowerCase();
 
-  if (msg.includes('receive') || msg.includes('donate') || msg.includes('compatible') || msg.includes('compatibility')) {
+  // 1. Basic Greetings
+  if (msg.startsWith('hi') || msg.startsWith('hello') || msg.startsWith('hey') || msg.includes('greetings')) {
+    return `Hello! I'm your LifeFlow compatibility assistant. How can I help you today? You can ask about compatibility for specific blood types (e.g., "Can A+ donate to AB-?") or donation guidelines.`;
+  }
+
+  if (msg.includes('thank') || msg.includes('thanks') || msg.includes('awesome') || msg.includes('great')) {
+    return `You're very welcome! If you have any more questions about blood groups, donation intervals, or compatibility rules, feel free to ask. Stay safe!`;
+  }
+
+  // 2. Specific compatibility pairings (e.g. "Can O- donate to AB+?")
+  const bloodGroupsRegex = /(ab\+|ab\-|a\+|a\-|b\+|b\-|o\+|o\-)/gi;
+  const groupsFound = msg.match(bloodGroupsRegex);
+  
+  if (groupsFound && groupsFound.length >= 2) {
+    const donor = groupsFound[0].toUpperCase();
+    const recipient = groupsFound[1].toUpperCase();
+    const compatibleDonors = COMPATIBILITY_MAP[recipient] || [];
+    const isCompatible = compatibleDonors.includes(donor);
+    
+    if (isCompatible) {
+      return `### Compatibility Match: Yes! ✅
+*   **Donor**: **${donor}**
+*   **Recipient**: **${recipient}**
+
+**Yes**, a donor with blood group **${donor}** can safely donate to a recipient with blood group **${recipient}**. 
+*(Reason: Recipients with ${recipient} blood can receive from: ${compatibleDonors.join(', ')}).*`;
+    } else {
+      return `### Compatibility Mismatch: No ❌
+*   **Donor**: **${donor}**
+*   **Recipient**: **${recipient}**
+
+**No**, blood group **${donor}** is **not compatible** with recipient blood group **${recipient}**. 
+*(Reason: Recipients with ${recipient} blood can only receive from: ${compatibleDonors.join(', ')}).*`;
+    }
+  }
+
+  // 3. Single Blood Type query (e.g. "Who can O- donate to?" or "Who can AB+ receive from?")
+  if (groupsFound && groupsFound.length === 1) {
+    const bg = groupsFound[0].toUpperCase();
+    
+    if (msg.includes('receive') || msg.includes('recipient') || msg.includes('get') || msg.includes('take')) {
+      const compatibleDonors = COMPATIBILITY_MAP[bg] || [];
+      return `### Recipient Guidelines for ${bg}
+A recipient with blood group **${bg}** can receive blood from:
+${compatibleDonors.map(d => `*   **${d}**`).join('\n')}
+
+*Note: O- is the universal donor, but can only receive from O- itself.*`;
+    }
+    
+    if (msg.includes('donate') || msg.includes('give') || msg.includes('donor') || msg.includes('send')) {
+      const canDonateTo = [];
+      for (const [recipientBg, donors] of Object.entries(COMPATIBILITY_MAP)) {
+        if (donors.includes(bg)) {
+          canDonateTo.push(recipientBg);
+        }
+      }
+      return `### Donor Guidelines for ${bg}
+A donor with blood group **${bg}** can donate blood to:
+${canDonateTo.map(r => `*   **${r}**`).join('\n')}
+
+${bg === 'O-' ? '*Universal Donor: O- blood can be given to patients of any blood group in emergencies.*' : ''}`;
+    }
+  }
+
+  // 4. Proximity matching details
+  if (msg.includes('distance') || msg.includes('proximity') || msg.includes('range') || msg.includes('km') || msg.includes('score') || msg.includes('ranking')) {
+    return `### LifeFlow Proximity Matching Algorithm
+Our matching engine prioritizes donors dynamically using a weighted formula:
+1.  **Availability (40%)**: Verifies if the donor is active and checked in.
+2.  **Proximity (40%)**: Calculates coordinate distances via the **Haversine formula**.
+3.  **Cooldown (20%)**: Checks that the donor has rested for at least 90 days since their last donation.
+
+*The top 5 matches are automatically notified of emergencies.*`;
+  }
+
+  // 5. Emergency alerts questions
+  if (msg.includes('emergency') || msg.includes('alert') || msg.includes('request') || msg.includes('hospital')) {
+    return `### Creating an Emergency Request
+To notify compatible donors in your area:
+1.  Navigate to **"Request Emergency Blood"** in the navigation bar.
+2.  Enter the patient's name, hospital address, and required blood type.
+3.  Select the **Urgency Level** and click **"Create Request"**.
+
+The matching system will locate compatible donors within a 30 km radius and notify them instantly.`;
+  }
+
+  // 6. Generic Blood compatibility matrix fallback
+  if (msg.includes('chart') || msg.includes('table') || msg.includes('matrix') || msg.includes('guidelines') || msg.includes('rule') || msg.includes('compatibility')) {
     return `### Blood Compatibility Chart
 *   **O-**: Can receive from **O-** only.
 *   **O+**: Can receive from **O+, O-**.
@@ -234,17 +319,11 @@ const evaluateChatLocally = (message: string): string => {
 *Note: O- is the Universal Donor, capable of donating to any blood group in emergencies.*`;
   }
 
-  if (msg.includes('eligibility') || msg.includes('eligible') || msg.includes('weight') || msg.includes('age')) {
-    return `### Donation Eligibility Requirements
-1. **Age**: 18 to 65 years old.
-2. **Weight**: Must be at least 50 kg.
-3. **Frequency**: Minimum 90 days wait between donations.
-4. **Health**: Free of colds, flu, active infections, and major active medications (e.g. blood thinners).`;
-  }
-
-  return `Hello! I am your Blood Bank Assistant. 
-
-I can answer compatibility questions (e.g., "Who can receive AB+ blood?") or details about general eligibility requirements (weight, age thresholds, and donation cooldowns). 
+  // 7. General Fallback
+  return `I am your LifeFlow AI Assistant. I can help you with:
+*   **Compatibility checks**: e.g., "Can O- donate to AB+?" or "Who can receive A+ blood?"
+*   **Donation cooldown rules**: e.g., "How often can I donate?"
+*   **Proximity ranking queries**: e.g., "How does donor scoring work?"
 
 How can I help you today?`;
 };

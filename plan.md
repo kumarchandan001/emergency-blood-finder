@@ -58,6 +58,12 @@ blood-bank/
 - [x] **Phase 6: Seeding & Verification**
   - [x] Creating seed script placing mock accounts around Bangalore area
   - [x] Verifying API distance checks and score calculations
+- [x] **Phase 7: Backend Admin Panel Expansion**
+  - [x] Verification updates, donations tracking, and compliance logs
+- [x] **Phase 8: Frontend Admin UI Setup & Analytics**
+  - [x] recharts integration, statistics dashboard, and donor audit panels
+- [x] **Phase 9: User & Inventory Modules**
+  - [x] user deletion controls, blood stock adjusting triggers, and CSV reports
 
 ---
 

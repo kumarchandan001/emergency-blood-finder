@@ -62,6 +62,13 @@ export const Navbar: React.FC = () => {
                 </Link>
               )}
 
+              {user.role === 'admin' && (
+                <Link to="/admin/dashboard" className="flex items-center gap-1.5 text-sm text-amber-400 hover:text-amber-300 font-bold transition-colors">
+                  <ShieldAlert className="w-4 h-4 text-amber-400" />
+                  <span>Admin Portal</span>
+                </Link>
+              )}
+
               <Link to="/chat" className="flex items-center gap-1.5 text-sm text-slate-300 hover:text-white transition-colors">
                 <BrainCircuit className="w-4 h-4 text-red-400" />
                 <span>AI Assistant</span>

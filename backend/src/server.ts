@@ -6,6 +6,7 @@ import authRoutes from './routes/authRoutes';
 import donorRoutes from './routes/donorRoutes';
 import requestRoutes from './routes/requestRoutes';
 import aiRoutes from './routes/aiRoutes';
+import adminRoutes from './routes/adminRoutes';
 
 // Load environmental config
 dotenv.config();
@@ -25,6 +26,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/donors', donorRoutes);
 app.use('/api/requests', requestRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {

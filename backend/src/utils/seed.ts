@@ -4,6 +4,8 @@ import { User } from '../models/User';
 import { Donor } from '../models/Donor';
 import { Request as BloodRequest } from '../models/Request';
 import { Notification } from '../models/Notification';
+import { BloodInventory } from '../models/BloodInventory';
+import { Donation } from '../models/Donation';
 
 dotenv.config();
 
@@ -19,6 +21,8 @@ const seedData = async () => {
     await Donor.deleteMany({});
     await BloodRequest.deleteMany({});
     await Notification.deleteMany({});
+    await Donation.deleteMany({});
+    await BloodInventory.deleteMany({});
 
     console.log('Collections cleared. Generating mock data...');
 
@@ -133,6 +137,8 @@ const seedData = async () => {
       }
     ];
 
+    let idx = 0;
+    const seededDonors = [];
     for (const data of donorsData) {
       const u = await User.create({
         name: data.name,
@@ -141,7 +147,7 @@ const seedData = async () => {
         role: 'donor',
       });
 
-      await Donor.create({
+      const d = await Donor.create({
         userId: u._id,
         bloodGroup: data.bloodGroup,
         phone: data.phone,
@@ -154,8 +160,46 @@ const seedData = async () => {
         },
         lastDonationDate: data.lastDonationDate,
         available: data.available,
+        verificationStatus: idx % 2 === 0 ? 'Approved' : 'Pending',
+        verificationRemarks: idx % 2 === 0 ? 'Audited by Super Admin' : 'Awaiting admin auditing',
+      });
+      seededDonors.push(d);
+      idx++;
+    }
+
+    // Seed Blood Inventory
+    const groups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
+    const mockUnits = [12, 4, 15, 3, 8, 2, 20, 4]; // Some below default threshold of 5
+    for (let i = 0; i < groups.length; i++) {
+      await BloodInventory.create({
+        bloodGroup: groups[i],
+        availableUnits: mockUnits[i],
+        lowStockThreshold: 5,
       });
     }
+
+    // Seed a mock Request and Donation
+    const mockReq = await BloodRequest.create({
+      patientName: 'Suresh Raina',
+      hospitalName: 'Apollo Hospital',
+      bloodGroup: 'O+',
+      unitsRequired: 2,
+      urgency: 'Critical',
+      location: {
+        type: 'Point',
+        coordinates: [77.5946, 12.9716],
+      },
+      status: 'Fulfilled',
+      createdBy: recipientUser._id,
+    });
+
+    await Donation.create({
+      donorId: seededDonors[0]._id, // Rahul (O+, Approved)
+      requestId: mockReq._id,
+      bloodGroup: 'O+',
+      hospital: 'Apollo Hospital',
+      remarks: 'Patient received donation successfully',
+    });
 
     console.log('Successfully seeded database with 1 admin, 1 recipient, and 7 donor accounts.');
     console.log('Demo Credentials:');

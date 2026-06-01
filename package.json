@@ -1,0 +1,11 @@
+{
+  "name": "life-flow-ai",
+  "version": "1.0.0",
+  "description": "Root orchestrator for AI-Powered Emergency Blood Donor Finder monorepo",
+  "scripts": {
+    "install:all": "npm install --prefix backend && npm install --prefix frontend",
+    "dev:backend": "npm run dev --prefix backend",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "seed": "npm run seed --prefix backend"
+  }
+}

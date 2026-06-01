@@ -63,6 +63,22 @@ const DonorSchema = new Schema({
       default: Date.now,
     },
   },
+  verificationStatus: {
+    type: String,
+    enum: ['Pending', 'Approved', 'Rejected', 'Suspended'],
+    default: 'Pending',
+  },
+  verifiedBy: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+  },
+  verifiedAt: {
+    type: Date,
+  },
+  verificationRemarks: {
+    type: String,
+    default: 'Awaiting admin auditing',
+  },
 });
 
 // Index location field for GeoJSON proximity queries

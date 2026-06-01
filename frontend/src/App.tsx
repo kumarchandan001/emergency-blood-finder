@@ -8,6 +8,14 @@ import { Dashboard } from './pages/Dashboard';
 import { EmergencyRequest } from './pages/EmergencyRequest';
 import { AIChat } from './pages/AIChat';
 import { EligibilityChecker } from './pages/EligibilityChecker';
+import { AdminLayout } from './components/AdminLayout';
+import { AdminDashboard } from './pages/AdminDashboard';
+import { DonorVerification } from './pages/DonorVerification';
+import { UserManagement } from './pages/UserManagement';
+import { RequestManagement } from './pages/RequestManagement';
+import { InventoryManagement } from './pages/InventoryManagement';
+import { Reports } from './pages/Reports';
+import { AuditLogs } from './pages/AuditLogs';
 
 // Route Guard for Protected Routes
 const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -65,6 +73,25 @@ const AppRoutes: React.FC = () => {
               </PrivateRoute>
             }
           />
+
+          {/* Secure Admin Namespace routes */}
+          <Route
+            path="/admin"
+            element={
+              <PrivateRoute>
+                <AdminLayout />
+              </PrivateRoute>
+            }
+          >
+            <Route index element={<Navigate to="dashboard" replace />} />
+            <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="verify" element={<DonorVerification />} />
+            <Route path="users" element={<UserManagement />} />
+            <Route path="requests" element={<RequestManagement />} />
+            <Route path="inventory" element={<InventoryManagement />} />
+            <Route path="reports" element={<Reports />} />
+            <Route path="audit-logs" element={<AuditLogs />} />
+          </Route>
 
           {/* Default Catch-all redirects */}
           <Route path="/" element={<Navigate to="/dashboard" replace />} />

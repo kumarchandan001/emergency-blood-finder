@@ -28,28 +28,30 @@ export const Login: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-80px)] px-4">
-      <div className="w-full max-w-md p-8 rounded-2xl glass-panel relative overflow-hidden">
-        {/* Glow effect */}
-        <div className="absolute -top-24 -left-24 w-48 h-48 bg-red-600/10 rounded-full blur-3xl" />
-        <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-red-800/10 rounded-full blur-3xl" />
+    <div className="relative flex items-center justify-center min-h-[calc(100vh-80px)] bg-radial-overlay bg-grid-pattern px-4">
+      <div className="w-full max-w-md p-8 rounded-3xl glass-panel border border-white/5 relative overflow-hidden shadow-2xl">
+        {/* Glow effects */}
+        <div className="absolute -top-32 -left-32 w-64 h-64 bg-red-600/10 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute -bottom-32 -right-32 w-64 h-64 bg-red-800/15 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
 
         <div className="relative z-10">
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold tracking-tight text-white mb-2">Welcome Back</h2>
-            <p className="text-slate-400 text-sm">Sign in to report emergencies or manage your donor status</p>
+            <h2 className="text-3xl font-extrabold tracking-tight text-white mb-2">
+              <span className="text-gradient">Welcome Back</span>
+            </h2>
+            <p className="text-slate-400 text-xs mt-1">Sign in to report emergencies or manage your donor status</p>
           </div>
 
           {error && (
-            <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg flex items-start gap-3 text-red-400 text-sm">
+            <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-xl flex items-start gap-3 text-red-400 text-sm shadow-[0_0_12px_rgba(239,68,68,0.05)]">
               <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
               <span>{error}</span>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-5 text-left">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Email Address</label>
+              <label className="block text-[10px] font-bold text-slate-450 uppercase tracking-wider mb-2">Email Address</label>
               <div className="relative">
                 <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500">
                   <Mail className="w-4 h-4" />
@@ -60,13 +62,13 @@ export const Login: React.FC = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@gmail.com"
-                  className="w-full pl-10 pr-4 py-3 bg-slate-900/60 border border-slate-800 focus:border-red-500/50 focus:ring-1 focus:ring-red-500/30 rounded-xl outline-none text-slate-200 text-sm transition-all placeholder:text-slate-600"
+                  className="w-full pl-10 pr-4 py-3 bg-slate-900/60 border border-slate-850 focus:border-red-500/40 rounded-xl outline-none text-slate-200 text-xs transition-all placeholder:text-slate-655 input-premium"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Password</label>
+              <label className="block text-[10px] font-bold text-slate-455 uppercase tracking-wider mb-2">Password</label>
               <div className="relative">
                 <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500">
                   <Lock className="w-4 h-4" />
@@ -77,7 +79,7 @@ export const Login: React.FC = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-10 pr-4 py-3 bg-slate-900/60 border border-slate-800 focus:border-red-500/50 focus:ring-1 focus:ring-red-500/30 rounded-xl outline-none text-slate-200 text-sm transition-all placeholder:text-slate-600"
+                  className="w-full pl-10 pr-4 py-3 bg-slate-900/60 border border-slate-850 focus:border-red-500/40 rounded-xl outline-none text-slate-200 text-xs transition-all placeholder:text-slate-655 input-premium"
                 />
               </div>
             </div>
@@ -85,10 +87,10 @@ export const Login: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 px-4 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 disabled:opacity-50 text-white font-semibold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-red-600/10 hover:shadow-red-600/20 transition-all border border-red-500/20 mt-2"
+              className="w-full py-3 px-4 btn-premium disabled:opacity-40 text-white font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-red-600/10 hover:shadow-red-650/20 transition-all border border-red-500/20 mt-4 text-xs"
             >
               {loading ? (
-                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
                 <>
                   <LogIn className="w-4 h-4" />
@@ -98,7 +100,7 @@ export const Login: React.FC = () => {
             </button>
           </form>
 
-          <p className="text-center text-xs text-slate-400 mt-8">
+          <p className="text-center text-xs text-slate-400 mt-8 pt-4 border-t border-slate-900/60">
             Don't have an account?{' '}
             <Link to="/register" className="text-red-400 hover:text-red-300 font-semibold underline transition-colors">
               Create an account

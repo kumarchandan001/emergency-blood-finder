@@ -114,7 +114,7 @@ export const updateDonorVerification = async (req: any, res: Response) => {
     await writeAuditLog(
       req.user,
       'Donor Audit',
-      `Audit status changed to ${status} for donor ${donor.userId.name}. Remarks: ${remarks || 'None'}`
+      `Audit status changed to ${status} for donor ${(donor.userId as any).name}. Remarks: ${remarks || 'None'}`
     );
 
     res.status(200).json({
@@ -353,7 +353,7 @@ export const createDonation = async (req: any, res: Response) => {
     await writeAuditLog(
       req.user,
       'Add Donation',
-      `Manual donation record created: ${donor.userId.name} donated to ${bloodRequest.patientName}`
+      `Manual donation record created: ${(donor.userId as any).name} donated to ${bloodRequest.patientName}`
     );
 
     res.status(201).json({
@@ -395,7 +395,7 @@ export const broadcastNotification = async (req: any, res: Response) => {
         // or just mock sending sms to console logs.
         message: `[BROADCAST ALERT]: ${message}`,
       });
-      console.log(`[BROADCAST SIMULATION] Dispatched email notification to ${donor.userId.email}: "${message}"`);
+      console.log(`[BROADCAST SIMULATION] Dispatched email notification to ${(donor.userId as any).email}: "${message}"`);
     }
 
     await writeAuditLog(

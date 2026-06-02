@@ -7,30 +7,89 @@
 @layer base {
   body {
     font-family: 'Outfit', sans-serif;
-    @apply bg-slate-950 text-slate-100 min-h-screen selection:bg-blood-500 selection:text-white;
+    @apply bg-slate-950 text-slate-100 min-h-screen selection:bg-blood-500 selection:text-white relative overflow-x-hidden;
   }
+}
+
+/* Premium Visual Backdrop Patterns */
+.bg-grid-pattern {
+  background-size: 50px 50px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+}
+
+.bg-radial-overlay {
+  background: radial-gradient(circle at 50% 0%, rgba(220, 38, 38, 0.12) 0%, rgba(15, 23, 42, 0) 50%),
+              radial-gradient(circle at 10% 80%, rgba(220, 38, 38, 0.05) 0%, rgba(15, 23, 42, 0) 40%),
+              radial-gradient(circle at 90% 60%, rgba(30, 41, 59, 0.3) 0%, rgba(15, 23, 42, 0) 55%);
 }
 
 /* Glassmorphism Design Styles */
 .glass-panel {
-  background: rgba(15, 23, 42, 0.65);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(10, 15, 30, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 }
 
 .glass-card {
-  background: rgba(30, 41, 59, 0.45);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(17, 24, 39, 0.5);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.2);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .glass-card:hover {
-  background: rgba(30, 41, 59, 0.65);
+  background: rgba(17, 24, 39, 0.7);
   border-color: rgba(239, 68, 68, 0.3);
-  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 0 15px 1px rgba(239, 68, 68, 0.15);
+  transform: translateY(-3px);
+}
+
+/* Premium Typography Gradients */
+.text-gradient {
+  background: linear-gradient(135deg, #ffffff 0%, #fecaca 40%, #f87171 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-gold {
+  background: linear-gradient(135deg, #ffffff 0%, #fde047 50%, #eab308 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Custom Interactive Controls */
+.input-premium {
+  background: rgba(10, 15, 30, 0.6) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.input-premium:focus {
+  border-color: rgba(239, 68, 68, 0.45);
+  box-shadow: 0 0 12px 1px rgba(239, 68, 68, 0.15);
+  background: rgba(10, 15, 30, 0.85) !important;
+}
+
+/* Premium Button Gradients */
+.btn-premium {
+  background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-premium:hover {
+  background: linear-gradient(135deg, #f87171 0%, #dc2626 100%);
+  box-shadow: 0 0 16px 2px rgba(239, 68, 68, 0.35);
+  transform: translateY(-1px);
+}
+
+.btn-premium:active {
+  transform: translateY(0);
 }
 
 /* Custom Scrollbar */
@@ -40,16 +99,17 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #090d16;
+  background: #05070f;
 }
 
 ::-webkit-scrollbar-thumb {
   background: #ef4444;
   border-radius: 3px;
+  border: 1px solid #05070f;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #b91c1c;
+  background: #dc2626;
 }
 
 /* Pulse animation for Leaflet active marker */
@@ -57,14 +117,17 @@
   0% {
     transform: scale(0.9);
     opacity: 1;
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
   }
-  50% {
-    transform: scale(1.2);
-    opacity: 0.7;
+  70% {
+    transform: scale(1.15);
+    opacity: 0.8;
+    box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
   }
   100% {
     transform: scale(0.9);
     opacity: 1;
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
   }
 }
 
@@ -78,4 +141,6 @@
   height: 100%;
   border-radius: 0.75rem;
   z-index: 10;
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
+
